@@ -19,7 +19,6 @@ export default class Home extends Component {
         return fetch('http://acomodacao-tcc.herokuapp.com/api/v1/acomodacoes')
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log("Resposta: " + responseJson[0].titulo);
                 this.setState({
                     isLoading: false,
                     acomodacoes: responseJson,
