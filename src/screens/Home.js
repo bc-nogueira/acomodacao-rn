@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { FlatList, ActivityIndicator, Text, View, TouchableOpacity } from 'react-native';
+import axios from 'axios';
 
 export default class Home extends Component {
     static navigationOptions = {
-        title: 'Welcome',
+        title: 'Acomodações',
     };
 
     constructor(props) {
@@ -16,20 +17,14 @@ export default class Home extends Component {
     }
 
     componentDidMount() {
-        return fetch('http://acomodacao-tcc.herokuapp.com/api/v1/acomodacoes')
-            .then((response) => response.json())
-            .then((responseJson) => {
+        axios.get('http://acomodacao-tcc.herokuapp.com/api/v1/acomodacoes')
+            .then(response => {
                 this.setState({
                     isLoading: false,
-                    acomodacoes: responseJson,
-                }, function () {
-
+                    acomodacoes: response.data
                 });
-
             })
-            .catch((error) => {
-                console.error(error);
-            });
+            .catch(error => console.log(error))
     }
 
     _renderItem = ({ item }) => {
@@ -56,15 +51,10 @@ export default class Home extends Component {
 
         return (
             <View style={{ flex: 1, paddingTop: 20 }}>
-                {/* <FlatList
-          data={this.state.acomodacoes}
-          renderItem={({item}) => <Text>{item.titulo}</Text>}
-          keyExtractor={({id}, index) => id}
-        /> */}
                 <FlatList
                     data={this.state.acomodacoes}
                     renderItem={this._renderItem}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.id.toString()}
                     ItemSeparatorComponent={() =>
                         <View style={{ height: 1, backgroundColor: '#f7f7f7' }}
                         />}
