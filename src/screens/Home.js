@@ -24,7 +24,7 @@ export default class Home extends Component {
                     acomodacoes: response.data
                 });
             })
-            .catch(error => console.log(error))
+            .catch(error => console.log("Erro: " + error))
     }
 
     _renderItem = ({ item }) => {
