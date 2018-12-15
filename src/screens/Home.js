@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, ActivityIndicator, Text, View, TouchableOpacity } from 'react-native';
+import { FlatList, ActivityIndicator, Text, View, TouchableOpacity, Button } from 'react-native';
 import axios from 'axios';
 
 export default class Home extends Component {
@@ -29,9 +29,23 @@ export default class Home extends Component {
 
     _renderItem = ({ item }) => {
         return (
-            <TouchableOpacity onPress={() => this._onItemPress(item)} style={{ flexDirection: 'row', padding: 10, alignItems: 'center' }}>
-                <Text style={{ marginLeft: 10 }}>{item.titulo}</Text>
-                <Text style={{ marginLeft: 10 }}>{item.preco}</Text>
+            <TouchableOpacity>
+                <Text style={{ marginLeft: 10, fontWeight: 'bold', fontSize: 20, textAlign: 'center' }}>
+                    {item.titulo}
+                </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 }}>
+                    <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                        <Text style={{ fontWeight: 'bold' }}>Capacidade: </Text>
+                        <Text>{item.capacidade}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', marginRight: 10 }}>
+                        <Text style={{ fontWeight: 'bold' }}>Preço: </Text>
+                        <Text>{item.preco}</Text>
+                    </View>
+                </View>
+                <View style={{ marginBottom: 5, marginTop: 5 }}>
+                    <Button title="Visualizar" onPress={() => this._onItemPress(item)} />
+                </View>
             </TouchableOpacity>
         )
     }
@@ -50,7 +64,7 @@ export default class Home extends Component {
         }
 
         return (
-            <View style={{ flex: 1, paddingTop: 20 }}>
+            <View style={{ flex: 1, paddingTop: 5 }}>
                 <FlatList
                     data={this.state.acomodacoes}
                     renderItem={this._renderItem}
