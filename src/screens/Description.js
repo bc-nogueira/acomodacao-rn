@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Image, Dimensions, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import axios from 'axios';
 import FullWidthImage from './../components/FullWidthImage';
-
-const SCREEN_WIDTH = Dimensions.get('screen').width;
+import MapView, { Marker } from 'react-native-maps';
 
 export default class Description extends Component {
     static navigationOptions = {
@@ -46,10 +45,10 @@ export default class Description extends Component {
     render() {
         const { acomodacao } = this.state;
         return (
-            <ScrollView>
+            <ScrollView style={{ flex: 1 }}>
                 {this.state && this.state.acomodacao &&
                     <View>
-                        <Text style={{ marginTop: 10, fontWeight: 'bold', fontSize: 24, textAlign: 'center' }}>
+                        <Text style={styles.titulo}>
                             {acomodacao.titulo}
                         </Text>
 
@@ -99,20 +98,53 @@ export default class Description extends Component {
                                 <Text style={{ fontWeight: 'bold' }}>Estado: </Text>
                                 <Text>{acomodacao.estado}</Text>
                             </View>
+
+                            
                         </View>
 
                         <Text style={{ marginLeft: 10, fontWeight: 'bold' }}>Descrição:</Text>
                         <Text style={{ marginLeft: 10 }}>{acomodacao.descricao}</Text>
+
+                        <Text style={styles.subtitulo}>Mapa</Text>
+
+                        <MapView
+                            style={{ height: 400 }}
+                            initialRegion={{
+                                latitude: parseFloat(acomodacao.latitude),
+                                longitude: parseFloat(acomodacao.longitude),
+                                // Deltas determinam a distância do zoom
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421,
+                            }}
+                        >
+                            <Marker coordinate={{
+                                latitude: parseFloat(acomodacao.latitude),
+                                longitude: parseFloat(acomodacao.longitude)
+                            }} />
+                        </MapView>
                     </View> 
                 }
-                {this.state.urls.map((url, index) => {
+                {this.state.urls.length > 0 &&
+                    <View>
+                        <Text style={styles.subtitulo}>Fotos</Text>
+                        {this.state.urls.map((url, index) => {
+                            return (
+                                <View key={index}>
+                                    <FullWidthImage source={{uri: url}} />
+                                    <View style = {styles.lineStyle} />
+                                </View>
+                            )    
+                        })}
+                    </View>
+                }
+                {/* {this.state.urls.map((url, index) => {
                     return (
                         <View key={index}>
                             <FullWidthImage source={{uri: url}} />
                             <View style = {styles.lineStyle} />
                         </View>
                     )
-                })}
+                })} */}
             </ScrollView>
         );
     }
@@ -123,10 +155,22 @@ const styles = StyleSheet.create({
       marginTop: 5,
       borderBottomWidth: 5
     },
-    lineStyle:{
+    lineStyle: {
         borderWidth: 0.5,
         borderColor:'black',
         margin:10,
+    },
+    titulo: {
+        marginTop: 10,
+        fontWeight: 'bold',
+        fontSize: 24,
+        textAlign: 'center'
+    },
+    subtitulo: {
+        marginTop: 10,
+        fontWeight: 'bold',
+        fontSize: 20,
+        textAlign: 'center'
     }
 });
   
