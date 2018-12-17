@@ -150,12 +150,12 @@ export default class Description extends Component {
                             />
                             <MapViewDirections
                                 origin={{
-                                    latitude: parseFloat(acomodacao.latitude),
-                                    longitude: parseFloat(acomodacao.longitude)
-                                }}
-                                destination={{
                                     latitude: this.state.currentPosition.latitude,
                                     longitude: this.state.currentPosition.longitude
+                                }}
+                                destination={{
+                                    latitude: parseFloat(acomodacao.latitude),
+                                    longitude: parseFloat(acomodacao.longitude)
                                 }}
                                 apikey={this.state.apikey}
                                 strokeWidth={5}
