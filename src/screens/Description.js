@@ -3,6 +3,7 @@ import { View, ScrollView, Text, StyleSheet } from 'react-native';
 import axios from 'axios';
 import FullWidthImage from './../components/FullWidthImage';
 import MapView, { Marker } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
 
 export default class Description extends Component {
     static navigationOptions = {
@@ -14,12 +15,27 @@ export default class Description extends Component {
 
         this.state = {
             acomodacao: null, 
-            urls: []
+            urls: [],
+            currentPosition: null,
+            apikey: 'AIzaSyAxFARM9NrPcw8lyIsFrwPRrG1v5kdaKL4'
         }
     }
     
     componentDidMount() {
         const { acomodacao } = this.props.navigation.state.params;
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                this.setState({
+                    currentPosition: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    }
+                });
+            },
+            (error) => this.setState({ error: error.message }),
+            { enableHighAccuracy: false, timeout: 30000 },
+         );
 
         axios.get('http://acomodacao-tcc.herokuapp.com/api/v1/acomodacoes/' + acomodacao.id)
             .then(response => {
@@ -108,7 +124,7 @@ export default class Description extends Component {
                         <Text style={styles.subtitulo}>Mapa</Text>
 
                         <MapView
-                            style={{ height: 400 }}
+                            style={{ height: 300 }}
                             initialRegion={{
                                 latitude: parseFloat(acomodacao.latitude),
                                 longitude: parseFloat(acomodacao.longitude),
@@ -117,10 +133,34 @@ export default class Description extends Component {
                                 longitudeDelta: 0.0421,
                             }}
                         >
-                            <Marker coordinate={{
-                                latitude: parseFloat(acomodacao.latitude),
-                                longitude: parseFloat(acomodacao.longitude)
-                            }} />
+                            <Marker 
+                                coordinate={{
+                                    latitude: parseFloat(acomodacao.latitude),
+                                    longitude: parseFloat(acomodacao.longitude)
+                                }}
+                                title={acomodacao.titulo}
+                            />
+                            <Marker 
+                                coordinate={{
+                                    latitude: this.state.currentPosition.latitude,
+                                    longitude: this.state.currentPosition.longitude
+                                }}
+                                pinColor="blue"
+                                title="Sua localização"
+                            />
+                            <MapViewDirections
+                                origin={{
+                                    latitude: parseFloat(acomodacao.latitude),
+                                    longitude: parseFloat(acomodacao.longitude)
+                                }}
+                                destination={{
+                                    latitude: this.state.currentPosition.latitude,
+                                    longitude: this.state.currentPosition.longitude
+                                }}
+                                apikey={this.state.apikey}
+                                strokeWidth={5}
+                                strokeColor="green"
+                            />
                         </MapView>
                     </View> 
                 }
@@ -137,14 +177,6 @@ export default class Description extends Component {
                         })}
                     </View>
                 }
-                {/* {this.state.urls.map((url, index) => {
-                    return (
-                        <View key={index}>
-                            <FullWidthImage source={{uri: url}} />
-                            <View style = {styles.lineStyle} />
-                        </View>
-                    )
-                })} */}
             </ScrollView>
         );
     }
