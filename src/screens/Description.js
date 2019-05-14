@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, ToastAndroid } from 'react-native';
 import axios from 'axios';
 import FullWidthImage from './../components/FullWidthImage';
 import MapView, { Marker } from 'react-native-maps';
 import MapViewDirections from 'react-native-maps-directions';
+import moment from 'moment';
 
 export default class Description extends Component {
     static navigationOptions = {
@@ -17,7 +18,8 @@ export default class Description extends Component {
             acomodacao: null, 
             urls: [],
             currentPosition: null,
-            apikey: 'AIzaSyAxFARM9NrPcw8lyIsFrwPRrG1v5kdaKL4'
+            apikey: 'AIzaSyAxFARM9NrPcw8lyIsFrwPRrG1v5kdaKL4',
+            inicioTimerDescription: this.props.navigation.state.params.inicioTimerDescription
         }
     }
     
@@ -43,6 +45,8 @@ export default class Description extends Component {
                     acomodacao: response.data.acomodacao,
                     urls: response.data.urls
                 });
+                ToastAndroid.show((moment().valueOf() - this.state.inicioTimerDescription).toString() + 'ms', 
+                    ToastAndroid.SHORT);
             })
             .catch(error => console.log("Erro: " + error))
     }
